@@ -1,0 +1,268 @@
+/* Cute kawaii valentine styles */
+:root {
+  --bg1: #ffeef6;
+  --bg2: #fff4e6;
+  --pink1: #ff7aa2;
+  --pink2: #ff4d7e;
+  --gray: #cfcfd3;
+  --accent: #ffb3c7;
+  --shadow: 0 8px 30px rgba(0,0,0,0.12);
+  font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+/* Ensure the html/body/root fill the viewport so the app can take the whole page */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(circle at 10% 20%, #fff1f8 0%, transparent 25%),
+              radial-gradient(circle at 90% 80%, #fff8e8 0%, transparent 25%),
+              linear-gradient(135deg, var(--bg1), var(--bg2));
+  color:#333;
+  -webkit-font-smoothing:antialiased;
+}
+
+.app {
+  width: 100vw;
+  min-height: 100vh;
+  padding: clamp(2rem, 6vw, 5rem);
+  box-sizing: border-box;
+  text-align: center;
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow: hidden;
+  z-index: 1; /* content above hearts */
+}
+
+.hearts { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index: 0; }
+
+.bad-emojis { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index: 0; }
+.bad {
+  --size: 22px;
+  position:absolute;
+  left:0; top:0;
+  font-size: var(--size);
+  line-height:1;
+  display:inline-block;
+  transform: translateY(0) rotate(0deg) scale(var(--s,1));
+  filter: drop-shadow(0 6px 18px rgba(20,20,40,0.08));
+  animation: fallDown linear forwards;
+  will-change: transform, opacity;
+  opacity:0;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+@keyframes fallDown {
+  0% { transform: translateY(-8%) rotate(-12deg) scale(calc(var(--s,1) * 0.6)); opacity:0 }
+  12% { transform: translateY(2%) rotate(-6deg) scale(calc(var(--s,1) * 1.08)); opacity:1 }
+  60% { transform: translateY(48%) rotate(6deg) scale(var(--s,1)); opacity:1 }
+  100% { transform: translateY(110%) rotate(18deg) scale(calc(var(--s,1) * 0.9)); opacity:0 }
+}
+
+/* Sad theme: greyscale background, muted text, hide hearts */
+.app.sad {
+  background: linear-gradient(180deg,#ececec,#cfcfcf);
+}
+.app.sad .title-line.big { background: linear-gradient(90deg,#a39aa0 0%, #7f7b80 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.app.sad .subtitle { color:#7a6f78 }
+.app.sad .message { color:#5b4a52 }
+.app.sad .hearts { display:none }
+.app.sad .btn.yes { filter: grayscale(.6) brightness(.9); }
+.app.sad .btn.no { box-shadow: 0 20px 40px rgba(30,30,30,0.08); }
+/* Heart component: use relative sizes and CSS variable --s for consistent scaling */
+.heart {
+  --size: 28px;
+  position:absolute;
+  left:0; top:0;
+  font-size: var(--size);
+  line-height: 1;
+  display:inline-block;
+  transform: translate(-50%, 0) scale(var(--s,1));
+  filter: drop-shadow(0 6px 18px rgba(255,90,140,0.12));
+  animation: floatEmoji linear infinite;
+  animation-timing-function: cubic-bezier(.22,1,.36,1);
+  animation-fill-mode: both; /* apply 0% state during animation-delay */
+  will-change: transform, opacity;
+  opacity: 0; /* start hidden so we can fade in */
+  text-shadow: 0 4px 10px rgba(255,80,140,0.12);
+}
+
+.title {
+  font-family: 'Fredoka One', 'Fredoka', 'Baloo Bhai', 'Poppins', sans-serif;
+  text-align:center;
+  margin:0 0 0.6rem;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+
+.title-line.big {
+  display:block;
+  font-size: clamp(2.8rem, 8vw, 6rem);
+  line-height:1.5;
+  font-weight:900;
+  color:transparent;
+  background: linear-gradient(90deg,#ff9cb3 0%,#ff2b5d 60%,#c7002f 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-stroke: 0.6px rgba(120,10,30,0.18);
+  text-shadow: 0 8px 18px rgba(200,20,60,0.14), 0 3px 6px rgba(0,0,0,0.12);
+  padding:0.1rem 0;
+  position:relative;
+  transform: translateZ(0);
+}
+
+.buttons {
+  display:flex;
+  gap: clamp(0.8rem, 2.5vw, 1.6rem);
+  justify-content:center;
+  margin-bottom:2rem;
+}
+.btn {
+  cursor:pointer;
+  border: none;
+  padding: clamp(.9rem, 1.8vw, 1.4rem) clamp(1.6rem, 3.5vw, 3rem);
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  /* respect per-button yes-scale variable */
+  transform: translateZ(0) scale(var(--yes-scale, 1));
+  position:relative;
+  transition: transform .18s cubic-bezier(.22,1,.36,1), box-shadow .18s ease, filter .18s ease, opacity .18s ease;
+  font-weight:800;
+  color:#fff;
+  outline:none;
+}
+.btn:focus { box-shadow: 0 0 0 6px rgba(255,100,140,0.12); }
+.btn:active { transform: translateY(2px) scale(calc(var(--yes-scale,1) * 0.99)); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 8px rgba(255,100,140,0.14); }
+
+/* Hover effects for all buttons */
+.btn:hover {
+  transform: translateY(-6px) scale(calc(var(--yes-scale,1) * 1.02));
+  filter: brightness(1.03) saturate(1.02);
+  box-shadow: 0 18px 40px rgba(255,80,140,0.12);
+}
+.btn::after { transition: transform .22s ease, opacity .22s ease; }
+.btn:hover::after { transform: translateY(-6px); opacity: 0.98; }
+
+/* Yes button hover (brighter, pink glow) */
+.btn.yes {
+  background: linear-gradient(180deg, #ff8aa6, #ff4b7d);
+}
+.btn.yes::after {
+  content:""; position:absolute; inset:0; border-radius:999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.06));
+  mix-blend-mode: overlay; pointer-events:none; transform: translateY(0); opacity: 0.9;
+}
+.btn.yes:hover {
+  box-shadow: 0 20px 50px rgba(255,60,130,0.18), 0 2px 6px rgba(0,0,0,0.08);
+}
+.btn.yes:active { transform: translateY(0) scale(.985); }
+
+/* No button hover (subtle darken and border) */
+.btn.no {
+  background: linear-gradient(180deg, #e3e3e6, #bdbcc2);
+  color: #423e45;
+}
+.btn.no::after {
+  content:""; position:absolute; inset:0; border-radius:999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.06));
+  mix-blend-mode: overlay; pointer-events:none; transform: translateY(0); opacity: 0.92;
+}
+.btn.no:hover {
+  filter: brightness(0.96);
+  box-shadow: 0 10px 30px rgba(40,40,40,0.08);
+}
+.btn.no:active { transform: translateY(2px) scale(.99); }
+
+/* Make hover styles slightly larger on hover for small screens */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-8px) scale(1.035); }
+  .btn.yes:hover { box-shadow: 0 26px 56px rgba(255,60,130,0.22); }
+}
+
+/* Celebration GIF shown after Yes is pressed */
+.gif-wrap {
+  margin-top: 1.2rem;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  pointer-events:none;
+  z-index: 1;
+}
+.yes-gif {
+  width: clamp(220px, 40vw, 480px);
+  max-height: 48vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(255,60,130,0.12);
+  animation: gifPop .5s cubic-bezier(.22,1,.36,1) both;
+}
+.sad-gif {
+  width: clamp(180px, 36vw, 420px);
+  max-height: 44vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 14px 30px rgba(30,30,40,0.12);
+  filter: grayscale(70%) contrast(85%) brightness(0.95);
+  animation: gifPop .5s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes gifPop {
+  0% { transform: scale(.6); opacity:0 }
+  60% { transform: scale(1.05); opacity:1 }
+  100% { transform: scale(1); opacity:1 }
+}
+
+.message {
+  font-weight:800;
+  color:#7a2b49;
+  min-height:2.4rem;
+  font-size: clamp(1.25rem, 3.2vw, 2rem); /* larger and responsive */
+  transition: transform .25s ease, opacity .25s ease, filter .18s ease;
+  transform-origin:center;
+  margin-top: .9rem;
+  text-align:center;
+  letter-spacing:0.2px;
+  filter: drop-shadow(0 6px 18px rgba(138,40,80,0.06));
+}
+
+@keyframes floatEmoji {
+  0% {
+    transform: translate(-50%, 0) scale(calc(var(--s,1) * 0.35));
+    opacity:0;
+  }
+  8% {
+    transform: translate(-50%, -4%) scale(calc(var(--s,1) * 1.18));
+    opacity:1;
+  }
+  20% {
+    transform: translate(-50%, -18%) scale(var(--s,1));
+    opacity:1;
+  }
+  100% {
+    transform: translate(-50%, -140%) scale(calc(var(--s,1) * 1.06));
+    opacity:0;
+  }
+}
+
+/* Ensure emoji spans honor a custom --size if provided by inline style */
+.heart, .bad { font-size: var(--size, 28px) }
+
+@media (max-width:420px) {
+  .buttons { flex-direction:column; gap:.8rem; padding:0 1rem; }
+  .btn { width:100%; padding:1rem; font-size:1.05rem; }
+}
